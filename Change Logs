@@ -1,0 +1,59 @@
+Change Logs
+
+import requests
+import json
+import datetime
+import time
+import hashlib
+import gzip
+import pandas as pd
+# Autenticación:
+
+# Se crea un JSON con el user y pass con acceso API
+auth = {"auth": {"username": "manuela.jaramillo_MIAMI", "password": "Ninguna-0!"}}
+
+appnexusMemberId = 2038  # Seat id de Appnexus
+# Se inicia un objeto Session
+
+AppnexusSession = requests.session()
+# Se hace un POST para autenticarse
+
+
+res = AppnexusSession.post('https://api.appnexus.com/auth', json.dumps(auth))
+print(json.dumps(res.json(), indent=4))
+time.sleep(1)  # delay para no pasar el limite de llamados por minuto de APN
+
+service = 'line_item' # nivel de jerarquía
+id = '6383207' 
+lookback = '40' # número de cambios 
+
+service = 'line_item' # nivel de jerarquía
+id = '6383207' 
+lookback = '20' # número de cambios 
+
+changelogjson = AppnexusSession.get('https://api.appnexus.com/change-log?service='+service+'&resource_id='+id+'&num_elements='+lookback)
+json.dumps(changelogjson.json(), indent=4)
+changelogdf = pd.read_json(json.dumps(changelogjson.json()["response"]["change_logs"]),orient='records')
+condensed_df = pd.DataFrame(columns = ['DateTime','transaction_id','changes','old_value','new_value'])
+for i in range(0,len(changelogdf.index)):
+    changedetailjson= AppnexusSession.get('https://api.appnexus.com/change-log-detail?service='+service+'&resource_id='+id+'&transaction_id='+changelogdf["transaction_id"].iloc[i])
+    changedetaildf = pd.read_json(json.dumps(changedetailjson.json()["response"]["change_log_details"][0]['changes']),orient='records')
+    true_changes = changedetaildf[ (changedetaildf['changed']== True) & (changedetaildf['field_name'] != 'last_modified')]
+    changetime = changedetaildf[changedetaildf['field_name'] == 'last_modified']
+    change_list = true_changes['field_name']
+    changes = change_list.tolist()
+    oldvalue_list = true_changes['old_value']
+    if len(changes) <1:
+        continue
+    else:
+        condensed_df = condensed_df.append({'DateTime':changetime['new_value'], 'transaction_id':changelogdf["transaction_id"].iloc[i], 'changes':changes, 'old_value': true_changes['old_value'], 'new_value':true_changes['new_value']},ignore_index=True)
+        condensed_df['number_of_changes'] = 1
+for i in range(0,len(condensed_df.index)):
+    num_of_changes = len(condensed_df['changes'].iloc[i])
+    condensed_df.loc[i,'number_of_changes'] = num_of_changes
+max_changes_per_date = condensed_df['number_of_changes'].max()
+#print max_changes_per_date
+#for j in range(0,max_changes_per_date):
+    #print j
+print 'Showing last ' + lookback + ' changes for ' + service + ' with ID: ' + id
+print condensed_df
