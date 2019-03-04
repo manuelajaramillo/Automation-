@@ -1,0 +1,102 @@
+---IMPRESIONES, VISTAS Y VCR POR DÍAS
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT  
+	EXTRACT(DAY from date_time) as DayDim ,
+	sum(case video_was_served when '1' then 1 else 0 END) as Imps,
+	sum(case video_completed when '1' then 1 else 0 END) as Completions
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+  AND line_item_id in ( 7292547 ) 
+  GROUP BY DayDim
+  
+  
+--IMPRESIONES, VISTAS Y VCR POR CIUDAD 
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+  
+SELECT 
+  standard.geo_city as City_Id,
+  sum(case video.video_was_served when '1' then 1 else 0 END) as Impressions,
+  sum(case video.video_completed when '1' then 1 else 0 END) as Completions
+  from  bc_core_appnexus_lld.video_events_feed_1892 as video
+  join  bc_core_appnexus_lld.standard_feed_1892 as standard
+  on video.auction_id_64 = standard.auction_id_64
+  where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
+  AND campaign_group_id in (7292547)
+  GROUP BY standard.geo_city
+  
+-- IMPRESIONSES, VISTAS Y VCR POR DÍA DE LA SEMANA
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT  
+	EXTRACT(WEEKDAY from date_time) as DayofWeek,
+	sum(case video_was_served when '1' then 1 else 0 END) as Imps,
+	sum(case video_completed when '1' then 1 else 0 END) as Completions
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' AND line_item_id in ( 7292547 ) GROUP BY DayofWeek
+  
+  
+  
+-- IMPRESIONSES, VISTAS Y VCR POR HORAS DEL DÍA
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+  
+  SELECT  
+	EXTRACT(HOUR from date_time) as HourofDay,
+	sum(case video_was_served when '1' then 1 else 0 END) as Imps,
+	sum(case video_completed when '1' then 1 else 0 END) as Completions
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' AND line_item_id in ( 7292547 ) GROUP BY HourofDay
+
+
+-- IMPRESIONSES, VISTAS Y VCR POR SITIO
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+ 
+SELECT  
+	site_domain,
+	sum(case video_was_served when '1' then 1 else 0 END) as Imps,
+	sum(case video_completed when '1' then 1 else 0 END) as Completions
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' AND line_item_id in ( 7292547 ) GROUP BY site_domain
+  
+
+-- IMPRESIONSES, VISTAS Y VCR POR DEVICE
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT 
+standard.device_type as Device_Type,
+sum(case video.video_was_served when '1' then 1 else 0 END) as Impressions,
+sum(case video.video_completed when '1' then 1 else 0 END) as Completions
+from  bc_core_appnexus_lld.video_events_feed_1892 as video
+join  bc_core_appnexus_lld.standard_feed_1892 as standard
+on video.auction_id_64 = standard.auction_id_64
+where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
+AND campaign_group_id in (7292547)
+GROUP BY standard.device_type
+ 
+ 
