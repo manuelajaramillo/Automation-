@@ -7,7 +7,7 @@
 --Market
 
 SELECT  
-	EXTRACT(DAY from date_time) as DayDim ,
+	DATE(date_time) as DayDim ,
 	sum(case video_was_served when '1' then 1 else 0 END) as Imps,
 	sum(case video_completed when '1' then 1 else 0 END) as Completions
 	from bc_core_appnexus_lld.video_events_feed_1892
