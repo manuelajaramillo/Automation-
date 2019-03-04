@@ -1,0 +1,125 @@
+---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR DÍAS
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT
+  EXTRACT(DAY from date_time) as DayDim ,
+  sum(case video_was_started when '1' then 1 else 0 END) as Impressions,
+  sum(case video_completed when '1' then 1 else 0 END) as Completions,
+  sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
+  sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+  AND line_item_id in ( 7292547 ) 
+  GROUP BY DayDim
+  
+  
+  
+---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR CIUDADES
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+  
+  SELECT 
+standard.geo_city as City_Id,
+sum(case video.video_was_served when '1' then 1 else 0 END) as Impressions,
+sum(case video.view_result when '1' then 1 else 0 END) as ViewableImps,
+sum(case video.view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps
+from  bc_core_appnexus_lld.video_events_feed_1892 as video
+join  bc_core_appnexus_lld.standard_feed_1892 as standard
+on video.auction_id_64 = standard.auction_id_64
+where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
+AND campaign_group_id in (7292547)
+GROUP BY standard.geo_city
+
+
+
+---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR DÍA DE LA SEMANA
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT
+  EXTRACT(WEEKDAY from date_time) as DayofWeek ,
+  sum(case video_was_served when '1' then 1 else 0 END) as Impressions,
+  sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
+  sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+  AND line_item_id in ( 7292547 ) 
+  GROUP BY DayofWeek
+  
+  ---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR HORA DEL DÍA
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT
+  EXTRACT(HOUR from date_time) as DayHour ,
+  sum(case video_was_served when '1' then 1 else 0 END) as Impressions,
+  sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
+  sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+  AND line_item_id in ( 7292547 ) 
+  GROUP BY DayHour
+  
+  
+  
+---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR DOMINIO
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+SELECT
+  site_domain ,
+  sum(case video_was_served when '1' then 1 else 0 END) as Impressions,
+  sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
+  sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
+	from bc_core_appnexus_lld.video_events_feed_1892
+	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+  AND line_item_id in ( 7292547 ) 
+  GROUP BY site_domain
+  
+  
+  
+  
+ ---IMPRESIONES, VIEWABLE IMPS Y MEASURABLE IMPS POR DOMINIO
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market 
+  
+  
+  
+  SELECT 
+standard.device_type as Device_Type,
+sum(case video.video_was_served when '1' then 1 else 0 END) as Impressions,
+sum(case video.view_result when '1' then 1 else 0 END) as ViewableImps,
+sum(case video.view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps
+from  bc_core_appnexus_lld.video_events_feed_1892 as video
+join  bc_core_appnexus_lld.standard_feed_1892 as standard
+on video.auction_id_64 = standard.auction_id_64
+where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
+AND campaign_group_id in (7292547)
+GROUP BY Device_type
+  
+  
