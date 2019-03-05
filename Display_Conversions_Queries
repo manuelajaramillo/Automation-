@@ -1,0 +1,159 @@
+---IMPRESIONES, CONVERSIONES Y CVR POR DÍAS
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+DATE(date_time - interval '5 hour') as DayDim,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY DayDim
+ORDER BY DayDim ASC
+
+
+---IMPRESIONES, CONVERSIONES Y CVR POR CIUDADES
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+geo_city as City_Id,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY City_Id
+
+
+
+---IMPRESIONES, CONVERSIONES Y CVR POR DÍAS DE LA SEMANA
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+EXTRACT(WEEKDAY from (date_time - interval '5 hour')) as DayOfWeek,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY DayOfWeek
+ORDER BY DayOfWeek ASC
+
+
+---IMPRESIONES, CONVERSIONES Y CVR POR HORAS DEL DIA
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+
+SELECT
+EXTRACT(HOUR from (date_time - interval '5 hour')) as DayHour,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY DayHour
+ORDER BY DayHour ASC
+
+
+
+
+--- PUNTICOS IMPRESIONES Y CONVERSIONES
+
+
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+EXTRACT (WEEKDAY from (date_time - interval '5 hour')) || '-' || EXTRACT(HOUR from (date_time - interval '5 hour')) as day_hour,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY day_hour
+ORDER BY day_hour ASC
+
+
+
+---IMPRESIONES, CONVERSIONES Y CVR POR DOMINIOS
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+
+SELECT
+site_domain,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY site_domain
+
+
+---IMPRESIONES, CONVERSIONES Y CVR POR TAMAÑO DE CREATIVO
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+width || 'x' || height as size,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY size
+
+---IMPRESIONES, CONVERSIONES Y CVR POR DEVICE
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market
+
+
+SELECT
+device_type as Device,
+sum(case event_type when 'imp' then 1 else 0 END) as Impressions,
+sum(case event_type when 'pv_conv' then 1 when 'pc_conv' then 1 else 0 END) as Conversions
+FROM bc_core_appnexus_lld.standard_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND campaign_group_id in (7335764)
+GROUP BY Device
+
+
