@@ -13,7 +13,7 @@ SELECT
   sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
   sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
 	from bc_core_appnexus_lld.video_events_feed_1892
-	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+	WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour' 
   AND line_item_id in ( 7292547 ) 
   GROUP BY DayDim
   
@@ -35,7 +35,7 @@ sum(case video.view_result when '1' then 1 when '2' then 1 else 0 END) as Measur
 from  bc_core_appnexus_lld.video_events_feed_1892 as video
 join  bc_core_appnexus_lld.standard_feed_1892 as standard
 on video.auction_id_64 = standard.auction_id_64
-where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
+WHERE video.date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour' 
 AND campaign_group_id in (7292547)
 GROUP BY standard.geo_city
 
@@ -55,7 +55,7 @@ SELECT
   sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
   sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
 	from bc_core_appnexus_lld.video_events_feed_1892
-	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+	WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour' 
   AND line_item_id in ( 7292547 ) 
   GROUP BY DayofWeek
   
@@ -73,7 +73,7 @@ SELECT
   sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
   sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
 	from bc_core_appnexus_lld.video_events_feed_1892
-	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+	WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
   AND line_item_id in ( 7292547 ) 
   GROUP BY DayHour
   
@@ -93,7 +93,7 @@ SELECT
   sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
   sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
 	from bc_core_appnexus_lld.video_events_feed_1892
-	where date_time BETWEEN '2019-02-01' AND '2019-02-28' 
+	WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour' 
   AND line_item_id in ( 7292547 ) 
   GROUP BY site_domain
   
@@ -118,8 +118,25 @@ sum(case video.view_result when '1' then 1 when '2' then 1 else 0 END) as Measur
 from  bc_core_appnexus_lld.video_events_feed_1892 as video
 join  bc_core_appnexus_lld.standard_feed_1892 as standard
 on video.auction_id_64 = standard.auction_id_64
-where video.date_time BETWEEN '2019-02-01' AND '2019-02-28'  
-AND campaign_group_id in (7292547)
+where video.date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND video.line_item_id in (7292547)
 GROUP BY Device_type
   
   
+-- PUNTICOS IMPRESIONES, VIEWS Y VIEWABILITY
+--Start Date
+--End Date
+--Service : Line Item or Insertion Order
+--Object ID
+--Market 
+  
+SELECT
+EXTRACT (WEEKDAY from (date_time - interval '5 hour')) || '-' || EXTRACT(HOUR from (date_time - interval '5 hour')) as day_hour,
+sum(case video_was_served when '1' then 1 else 0 END) as Impressions,
+sum(case view_result when '1' then 1 else 0 END) as ViewableImps,
+sum(case view_result when '1' then 1 when '2' then 1 else 0 END) as MeasuredImps 
+FROM bc_core_appnexus_lld.video_events_feed_1892
+WHERE date_time BETWEEN DATE('2019-02-01')+ INTERVAL '5 hour' AND DATE('2019-02-28') + INTERVAL '5 hour'
+AND line_item_id in (7292547)
+GROUP BY day_hour
+ORDER BY day_hour ASC
