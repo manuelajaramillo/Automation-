@@ -1,0 +1,67 @@
+import pandas as pd
+from pptx import Presentation
+from pptx.chart.data import CategoryChartData
+from pptx.enum.chart import XL_CHART_TYPE
+from pptx.enum.shapes import PP_PLACEHOLDER
+from pptx.util import Cm
+from pptx.util import Pt
+from datetime import datetime
+from pptx.enum.dml import MSO_THEME_COLOR
+import pptx
+
+# Guardar los layouts mas comunes en variables
+Title_text_white_layout = 1
+Section_layout = 2
+
+
+# Cargar presentación con branding de Xaxis y espacios definidos
+prs = Presentation('Xaxtemp.pptx')
+
+# Modificar el slide de título
+
+Title_slide = prs.slides[0]
+Title_slide_shapes = list(Title_slide.shapes)
+Title_slide_shapes[0].text = 'TEST CAMPAIGN'
+Title_slide_shapes[1].text = '2019-02-01 A 2019-02-28'
+
+# SEGUNDO SLIDE: DATOS GENERALES
+
+General_data_slide = prs.slides.add_slide(prs.slide_layouts[Title_text_white_layout])
+General_data_shapes = list(General_data_slide.shapes)
+
+
+General_data_shapes[0].text = 'DATOS GENERALES'
+
+
+Frame = General_data_shapes[1].insert_table(10,2)
+Table = Frame.table
+Table.cell(0,0).text, Table.cell(0,1).text= 'ANUNCIANTE' , 'Test'
+Table.cell(1,0).text, Table.cell(1,1).text = 'PAIS' , 'Colombia'
+Table.cell(2,0).text, Table.cell(2,1).text = 'FECHAS' , '2019-02-01 a 2019-02-28'
+Table.cell(3,0).text, Table.cell(3,1).text = 'FORMATO' , 'Display'
+Table.cell(4,0).text, Table.cell(4,1).text = 'IMPRESIONES' , '2345678'
+Table.cell(5,0).text, Table.cell(5,1).text = 'VIEWABILITY' , '65%'
+Table.cell(6,0).text, Table.cell(6,1).text = 'CLICKS' , '2566'
+Table.cell(7,0).text, Table.cell(7,1).text = 'CTR%' , '0.02%'
+Table.cell(8,0).text, Table.cell(8,1).text = 'CONVERSIONES' , '26'
+Table.cell(9,0).text, Table.cell(9,1).text = 'CVR%' , '0.0001%'
+
+for i in range(len(Table.columns)): 
+    for j in range(len(Table.rows)):
+        Cell = Table.cell(j,i)
+        fill = Cell.fill
+        fill.solid()
+        fill.background()
+
+# TERCER SLIDE SECCIÓN DE FORMATO + KPI
+
+Section_kpi_1_slide = prs.slides.add_slide(prs.slide_layouts[Section_layout])
+Section_kpi_1_shapes = list(Section_kpi_1_slide.shapes)
+Section_kpi_1_shapes[0].text = 'DISPLAY'
+Section_kpi_1_shapes[1].text = 'CLICK THROUGH RATES'
+
+
+
+
+## GUARDAR EN NUEVO ARCHIVO PPTX
+prs.save('XTest.pptx')
